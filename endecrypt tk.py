@@ -3,6 +3,7 @@ import time
 
 root = Tk()
 root.title('EnDecrypt')
+menubar=Menu(root)
 
 LUT_encryption = dict()
 
@@ -25,19 +26,20 @@ def encrypt_message():
             encrypted_msg += LUT_encryption[i]
         else:
             numerize = int(ord(i))
-            encrypt = pow(numerize, e, n)
+            encrypt = pow(numerize, n, e)
             LUT_encryption[i] = unichr(encrypt)
             encrypted_msg += unichr(encrypt)
     mssg.delete(1.0, END)
     mssg.insert(END, encrypted_msg)
     
         
-        
+def donothing():
+   print "a"
         
 def decrypt_message():
     n = int(nvalue.get())
     d = 83
-    cipher = mssg2.get(1.0, END)
+    cipher = mssg.get(1.0, END)
     decrypted_msg = ""
     for i in cipher:
         if i in LUT_decryption:
@@ -47,44 +49,68 @@ def decrypt_message():
             decrypt = pow(numerize, d, n)
             LUT_decryption[i] = unichr(decrypt)
             decrypted_msg += unichr(decrypt)       
-    mssg2.delete(1.0, END)
-    mssg2.insert(END, decrypted_msg)
+    mssg.delete(1.0, END)
+    mssg.insert(END, decrypted_msg)
 
+def savefileW():
+    f = open("README.txt", "w")
+    messages = mssg.get(0, END)
+    for i in message:
+        f.write(i + "\n")
+        f.close()
     
-def printtest():
-    print "hello"
-
-
+def openfileR():
+    f = open("README.txt", "r")
+    for line in f:
+        mssg.insert(END, line)
+        
 Encrypt = Label(root, text = "Encryption")
 Encrypt.grid(row = 0)
 
-n = Label(root, text = "n =")
-n.grid(row = 2, column = 0, sticky = EW)
-
-nvalue = Entry(root)
-nvalue.grid(row = 2, column = 0, columnspan = 2)
-
-
 e = Label(root, text = "e =")
-e.grid(row = 2, column = 3)
-
+e.grid(row = 2, column = 0)
 
 evalue = Entry(root)
-evalue.grid(row = 2, column = 4, columnspan = 2,)
+evalue.grid(row = 2, column = 1, columnspan = 4)
+
+
+n = Label(root, text = "n =")
+n.grid(row = 2, column = 6)
+
+
+nvalue = Entry(root)
+nvalue.grid(row = 2, column = 7, columnspan = 4)
 
 
 enbutton = Button(root, text = "Encrypt", command=encrypt_message)
 enbutton.grid(row = 3, column = 1)
 
 de = Button(root, text = "Decrypt", command=decrypt_message)
-de.grid(row = 3, column = 5)
-
-mssg2 = Text(root)
-mssg2.grid(row = 10, column = 5, columnspan = 2)
-mssg2.insert(END, "Cipher")
+de.grid(row = 3, column = 7)
 
 mssg = Text(root)
-mssg.grid(row = 10, columnspan = 2)
-mssg.insert(END , "Message")
+mssg.grid(column = 0, columnspan = 8)
+mssg.insert(END , "Message/Cipher")
 
+filemenu=Menu(menubar,tearoff=0)
+filemenu.add_command(label="New", command=donothing)
+filemenu.add_command(label="Open", command=openfileR)
+filemenu.add_command(label="Save", command=savefileW)
+filemenu.add_command(label="Save as...", command=donothing)
+filemenu.add_command(label="Close", command=donothing)
+filemenu.add_separator()
+filemenu.add_command(label="Exit", command=root.quit)
+menubar.add_cascade(label="File", menu=filemenu)
+
+editmenu=Menu(menubar,tearoff=0)
+editmenu.add_command(label="Undo", command=donothing)
+editmenu.add_command(label="Copy", command=donothing)
+editmenu.add_command(label="Paste", command=donothing)
+menubar.add_cascade(label="Edit", menu=editmenu)
+
+helpmenu=Menu(menubar,tearoff=0)
+helpmenu.add_command(label="Help",command=donothing)
+menubar.add_cascade(label="Help",menu=helpmenu)
+
+root.config(menu = menubar)
 root.mainloop()
