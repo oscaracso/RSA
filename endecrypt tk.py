@@ -1,5 +1,6 @@
 from Tkinter import *
-import time
+import tkMessageBox #imports tkmessagebox
+#from PIL import Image, ImageTk
 
 root = Tk()
 root.title('EnDecrypt')
@@ -26,19 +27,20 @@ def encrypt_message():
             encrypted_msg += LUT_encryption[i]
         else:
             numerize = int(ord(i))
-            encrypt = pow(numerize, n, e)
+            encrypt = pow(numerize, e, n)
             LUT_encryption[i] = unichr(encrypt)
             encrypted_msg += unichr(encrypt)
     mssg.delete(1.0, END)
     mssg.insert(END, encrypted_msg)
+    tkMessageBox.showinfo("Encrypted Nessage" ,"your message has been encrypted")
     
         
 def donothing():
    print "a"
         
 def decrypt_message():
-    n = int(nvalue.get())
-    d = 83
+    n = int(4061)
+    d = int(83)
     cipher = mssg.get(1.0, END)
     decrypted_msg = ""
     for i in cipher:
@@ -54,10 +56,10 @@ def decrypt_message():
 
 def savefileW():
     f = open("README.txt", "w")
-    messages = mssg.get(0, END)
-    for i in message:
+    messages = mssg.get(1.0, END)
+    for i in messages:
         f.write(i + "\n")
-        f.close()
+    f.close()
     
 def openfileR():
     f = open("README.txt", "r")
